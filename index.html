@@ -282,14 +282,10 @@
 အချစ်ဘက်က ပြောမှားဆိုမှားတွေ၊ နားလည်မှုလွဲခဲ့တာတွေ၊ မောင်စိတ်မကောင်းဖြစ်ခဲ့ရတဲ့ အချိန်တွေရှိခဲ့ရင်လည်း တကယ်တောင်းပန်ပါတယ်နော်။ တစ်ခါတလေ အချစ်က မောင်ကိုချစ်လွန်းလို့ စိတ်ဆိုးမိတာတွေမသိစိတ်နဲ့ နာကျင်စေမိတာတွေရှိနိုင်ပေမဲ့ မောင်ကိုချစ်တဲ့စိတ်ကတော့ ဘယ်တော့မှ မလျော့ခဲ့ပါဘူး။
                 </p>
                 <p class="text-justify">
-                    
-
-ဘဝရဲ့ခရီးလမ်းမှာ ပျော်ရွှင်တဲ့အချိန်တွေရော ခက်ခဲတဲ့အချိန်တွေပါ အတူတူဖြတ်သန်းရင်း မောင်ရဲ့အပြုံးလေးတွေကို အမြဲမြင်တွေ့ခွင့်ရချင်တယ်။ မောင်ပင်ပန်းတဲ့အခါ အနားယူစရာနေရာလေး၊ ဝမ်းနည်းတဲ့အခါ ရင်ဖွင့်စရာလူလေး ဖြစ်ပေးချင်တယ်။
-
+                    ဘဝရဲ့ခရီးလမ်းမှာ ပျော်ရွှင်တဲ့အချိန်တွေရော ခက်ခဲတဲ့အချိန်တွေပါ အတူတူဖြတ်သန်းရင်း မောင်ရဲ့အပြုံးလေးတွေကို အမြဲမြင်တွေ့ခွင့်ရချင်တယ်။ မောင်ပင်ပန်းတဲ့အခါ အနားယူစရာနေရာလေး၊ ဝမ်းနည်းတဲ့အခါ ရင်ဖွင့်စရာလူလေး ဖြစ်ပေးချင်တယ်။
                 </p>
                 <p class="text-justify">
                     နောက်လာမယ့်မွေးနေ့တွေတိုင်းမှာလည်း အချစ်က မောင်ဘေးမှာရှိမှာပါ။မောင်ရဲ့ဘဝမှာ အချစ်က အမှတ်တရကောင်းလေးတစ်ခု ဖြစ်နေရင်ပဲ ကျေနပ်ပါတယ်။
-
                 </p>
                 <p class="text-center font-bold text-pink-600 text-xs md:text-sm pt-1">
                     "အများကြီးချစ်တယ်နော် မောင်💕" <br>
@@ -342,6 +338,15 @@
         // Long Press / Hold Detection
         const startHold = () => {
             if (hasTriggered) return;
+            
+            // Mobile Browser Security Fix: Load & unlock audio context on direct user touch/click event
+            if (bgMusic.paused) {
+                bgMusic.play().then(() => {
+                    // Immediately pause and resume or let it play to unlock audio context for mobile
+                    bgMusic.pause();
+                }).catch(e => console.log("Audio unlock error:", e));
+            }
+
             isHolding = true;
             
             holdTimer = setTimeout(() => {
@@ -367,8 +372,9 @@
         function triggerMergeSequence() {
             hasTriggered = true;
 
-            // Play background music
+            // Play background music (now successfully unlocked by user touch event)
             if (bgMusic) {
+                bgMusic.currentTime = 0;
                 bgMusic.play().catch(e => console.log("Audio play blocked:", e));
             }
 
